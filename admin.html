@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الأدمن | صيدلية مروة سليم عبيس</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal-deep:#0E3B39;
+    --teal-deeper:#0A2C2A;
+    --teal-mid:#1B6B63;
+    --teal-soft:#DCEAE6;
+    --amber:#E8A33D;
+    --amber-dark:#C97F1E;
+    --bg:#F5F8F6;
+    --white:#FFFFFF;
+    --ink:#142322;
+    --muted:#5B6D69;
+    --line:#D8E5E1;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'IBM Plex Sans Arabic',sans-serif;
+    background:linear-gradient(160deg,var(--teal-deeper) 0%, var(--teal-deep) 60%, var(--teal-mid) 100%);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:1.5rem;
+  }
+  h1,h2,.brand{font-family:'Cairo',sans-serif;}
+
+  /* شاشة تسجيل الدخول */
+  .login-box{
+    background:var(--white);border-radius:22px;padding:2.6rem 2.2rem;
+    width:100%;max-width:380px;box-shadow:0 30px 60px -20px rgba(0,0,0,.4);
+    text-align:center;
+  }
+  .login-box .icon{
+    width:60px;height:60px;border-radius:16px;background:var(--teal-deep);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;
+  }
+  .login-box h1{font-size:1.3rem;color:var(--teal-deeper);margin-bottom:.4rem;}
+  .login-box p{color:var(--muted);font-size:.88rem;margin-bottom:1.6rem;}
+  .login-box input{
+    width:100%;padding:.9rem 1rem;border:1.5px solid var(--line);border-radius:12px;
+    font-size:1rem;font-family:inherit;margin-bottom:.9rem;text-align:center;
+    letter-spacing:2px;
+  }
+  .login-box input:focus{outline:none;border-color:var(--teal-mid);}
+  .login-box button{
+    width:100%;padding:.9rem;border:none;border-radius:12px;background:var(--amber);
+    color:#28180a;font-weight:800;font-size:1rem;font-family:'Cairo',sans-serif;cursor:pointer;
+    transition:background .2s ease;
+  }
+  .login-box button:hover{background:var(--amber-dark);}
+  .error-msg{color:#C0392B;font-size:.85rem;margin-top:.8rem;display:none;}
+
+  /* لوحة الإحصائيات */
+  .dashboard{width:100%;max-width:900px;display:none;}
+  .dash-header{
+    display:flex;justify-content:space-between;align-items:center;
+    color:#fff;margin-bottom:1.8rem;flex-wrap:wrap;gap:1rem;
+  }
+  .dash-header h1{font-size:1.5rem;}
+  .dash-header span{color:rgba(255,255,255,.7);font-size:.85rem;}
+  .logout-btn{
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;
+    padding:.6rem 1.2rem;border-radius:10px;font-family:'Cairo',sans-serif;font-weight:700;
+    cursor:pointer;font-size:.85rem;
+  }
+  .logout-btn:hover{background:rgba(255,255,255,.2);}
+
+  .stats-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.3rem;margin-bottom:1.5rem;
+  }
+  .stat-card{
+    background:var(--white);border-radius:20px;padding:1.8rem;
+    box-shadow:0 15px 35px -15px rgba(0,0,0,.3);
+  }
+  .stat-card .label{font-size:.85rem;color:var(--muted);font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
+  .stat-card .value{font-family:'Cairo',sans-serif;font-size:2.4rem;font-weight:900;color:var(--teal-deeper);}
+  .stat-card.editable .value-row{display:flex;align-items:center;gap:.6rem;margin-top:.4rem;}
+  .stat-card.editable input{
+    width:100%;padding:.6rem .8rem;border:1.5px solid var(--line);border-radius:10px;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:1.2rem;color:var(--teal-deeper);
+  }
+  .stat-card.editable button{
+    background:var(--teal-deep);color:#fff;border:none;border-radius:10px;padding:.6rem 1rem;
+    font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;font-size:.85rem;flex-shrink:0;
+  }
+  .stat-card.editable button:hover{background:var(--teal-mid);}
+  .save-msg{font-size:.78rem;color:var(--teal-mid);margin-top:.5rem;display:none;}
+
+  .note{
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;
+    padding:1rem 1.3rem;color:rgba(255,255,255,.85);font-size:.82rem;line-height:1.7;
+  }
+</style>
+</head>
+<body>
+
+<div class="login-box" id="loginBox">
+  <div class="icon">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#fff" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#fff" stroke-width="1.8"/></svg>
+  </div>
+  <h1>لوحة تحكم الأدمن</h1>
+  <p>صيدلية مروة سليم عبيس — دخول خاص بالإدارة فقط</p>
+  <input type="password" id="passInput" placeholder="كلمة المرور" autocomplete="off">
+  <button onclick="tryLogin()">دخول</button>
+  <div class="error-msg" id="errorMsg">كلمة المرور غير صحيحة، حاول مرة أخرى.</div>
+</div>
+
+<div class="dashboard" id="dashboard">
+  <div class="dash-header">
+    <div>
+      <h1>إحصائيات الموقع</h1>
+      <span>صيدلية مروة سليم عبيس — بيانات مباشرة</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="label">👥 عدد الزوار (فريدين)</div>
+      <div class="value" id="visitorsCount">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🔁 عدد مرات الدخول</div>
+      <div class="value" id="visitsCount">—</div>
+    </div>
+  </div>
+
+  <div class="note">
+    ℹ️ "عدد الزوار" و"عدد مرات الدخول" يُحسبان تلقائيًا وإلكترونيًا من زيارات الموقع الفعلية. هذه اللوحة غير مرتبطة بالموقع الظاهر للزوار ولا يمكن لأي عميل الوصول إليها.
+  </div>
+</div>
+
+<script>
+  var NAMESPACE = 'marwa-salim-pharmacy-taji';
+  var ADMIN_PASSWORD = '11223344'; // غيّرها متى ما أردت من هنا
+
+  function tryLogin(){
+    var val = document.getElementById('passInput').value;
+    if(val === ADMIN_PASSWORD){
+      try{ sessionStorage.setItem('admin_ok','1'); }catch(e){}
+      showDashboard();
+    } else {
+      document.getElementById('errorMsg').style.display = 'block';
+    }
+  }
+
+  document.getElementById('passInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') tryLogin();
+  });
+
+  function logout(){
+    try{ sessionStorage.removeItem('admin_ok'); }catch(e){}
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'block';
+  }
+
+  function showDashboard(){
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadStats();
+  }
+
+  function loadStats(){
+    fetch('https://api.countapi.xyz/get/' + NAMESPACE + '/visitors')
+      .then(function(r){ return r.json(); })
+      .then(function(d){ document.getElementById('visitorsCount').textContent = (d && d.value) ? d.value : 0; })
+      .catch(function(){ document.getElementById('visitorsCount').textContent = '—'; });
+
+    fetch('https://api.countapi.xyz/get/' + NAMESPACE + '/visits')
+      .then(function(r){ return r.json(); })
+      .then(function(d){ document.getElementById('visitsCount').textContent = (d && d.value) ? d.value : 0; })
+      .catch(function(){ document.getElementById('visitsCount').textContent = '—'; });
+  }
+
+  // إبقاء الأدمن مسجّل دخول خلال نفس الجلسة (يُطلب كلمة السر من جديد عند فتح المتصفح مجددًا)
+  (function(){
+    var ok = false;
+    try{ ok = sessionStorage.getItem('admin_ok') === '1'; }catch(e){}
+    if(ok){ showDashboard(); }
+  })();
+</script>
+
+</body>
+</html>
