@@ -1728,10 +1728,10 @@
   /* ===== VISITOR COUNTER ===== */
   (function(){
     try {
-      fetch('https://api.counterapi.dev/v1/marwasalim/visits/up').catch(function(){});
+      fetch('https://api.counterapi.dev/v1/marwasalim/visits/up?t=' + Date.now()).catch(function(){});
       if(!localStorage.getItem('visited_before')){
         localStorage.setItem('visited_before', '1');
-        fetch('https://api.counterapi.dev/v1/marwasalim/visitors/up').catch(function(){});
+        fetch('https://api.counterapi.dev/v1/marwasalim/visitors/up?t=' + Date.now()).catch(function(){});
       }
     } catch(e){}
   })();
