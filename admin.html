@@ -72,7 +72,7 @@
   .logout-btn:hover{background:rgba(255,255,255,.2);}
 
   .stats-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.3rem;margin-bottom:1.5rem;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.3rem;margin-bottom:1.5rem;
   }
   .stat-card{
     background:var(--white);border-radius:20px;padding:1.8rem;
@@ -80,22 +80,47 @@
   }
   .stat-card .label{font-size:.85rem;color:var(--muted);font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
   .stat-card .value{font-family:'Cairo',sans-serif;font-size:2.4rem;font-weight:900;color:var(--teal-deeper);}
-  .stat-card.editable .value-row{display:flex;align-items:center;gap:.6rem;margin-top:.4rem;}
-  .stat-card.editable input{
-    width:100%;padding:.6rem .8rem;border:1.5px solid var(--line);border-radius:10px;
-    font-family:'Cairo',sans-serif;font-weight:800;font-size:1.2rem;color:var(--teal-deeper);
+  .stat-card .sub{font-size:.78rem;color:var(--muted);margin-top:.3rem;}
+
+  /* إعدادات كلمة المرور */
+  .settings-card{
+    background:var(--white);border-radius:20px;padding:1.8rem;
+    box-shadow:0 15px 35px -15px rgba(0,0,0,.3);margin-bottom:1.5rem;
   }
-  .stat-card.editable button{
-    background:var(--teal-deep);color:#fff;border:none;border-radius:10px;padding:.6rem 1rem;
-    font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;font-size:.85rem;flex-shrink:0;
+  .settings-card h3{font-family:'Cairo',sans-serif;color:var(--teal-deeper);margin-bottom:1rem;font-size:1.1rem;}
+  .settings-row{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;}
+  .settings-row input{
+    flex:1;min-width:180px;padding:.7rem 1rem;border:1.5px solid var(--line);border-radius:10px;
+    font-family:inherit;font-size:.95rem;
   }
-  .stat-card.editable button:hover{background:var(--teal-mid);}
+  .settings-row input:focus{outline:none;border-color:var(--teal-mid);}
+  .settings-row button{
+    background:var(--teal-deep);color:#fff;border:none;border-radius:10px;
+    padding:.7rem 1.2rem;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;
+    font-size:.88rem;flex-shrink:0;transition:background .2s ease;
+  }
+  .settings-row button:hover{background:var(--teal-mid);}
   .save-msg{font-size:.78rem;color:var(--teal-mid);margin-top:.5rem;display:none;}
+
+  .reset-section{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line);}
+  .reset-btn{
+    background:#C0392B;color:#fff;border:none;border-radius:10px;
+    padding:.6rem 1.2rem;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;
+    font-size:.85rem;transition:background .2s ease;
+  }
+  .reset-btn:hover{background:#A93226;}
 
   .note{
     background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;
     padding:1rem 1.3rem;color:rgba(255,255,255,.85);font-size:.82rem;line-height:1.7;
   }
+  .note + .note{margin-top:.8rem;}
+
+  .back-link{
+    display:inline-flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.6);
+    font-size:.85rem;margin-top:1.2rem;transition:color .2s ease;
+  }
+  .back-link:hover{color:rgba(255,255,255,.9);}
 </style>
 </head>
 <body>
@@ -114,7 +139,7 @@
 <div class="dashboard" id="dashboard">
   <div class="dash-header">
     <div>
-      <h1>إحصائيات الموقع</h1>
+      <h1>📊 إحصائيات الموقع</h1>
       <span>صيدلية مروة سليم عبيس — بيانات مباشرة</span>
     </div>
     <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
@@ -124,25 +149,70 @@
     <div class="stat-card">
       <div class="label">👥 عدد الزوار (فريدين)</div>
       <div class="value" id="visitorsCount">—</div>
+      <div class="sub">زوار فريدين من هذا المتصفح</div>
     </div>
     <div class="stat-card">
       <div class="label">🔁 عدد مرات الدخول</div>
       <div class="value" id="visitsCount">—</div>
+      <div class="sub">إجمالي زيارات الصفحة</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🌙 وضع ليلي</div>
+      <div class="value" id="darkModeCount">—</div>
+      <div class="sub">مستخدمين فعّلوا الوضع الليلي</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🌐 اللغة الإنجليزية</div>
+      <div class="value" id="langCount">—</div>
+      <div class="sub">مستخدمين اختاروا الإنجليزية</div>
+    </div>
+  </div>
+
+  <!-- إعدادات كلمة المرور -->
+  <div class="settings-card">
+    <h3>🔐 تغيير كلمة المرور</h3>
+    <div class="settings-row">
+      <input type="password" id="newPassInput" placeholder="كلمة المرور الجديدة">
+      <button onclick="changePassword()">تغيير</button>
+    </div>
+    <div class="save-msg" id="passSaveMsg">✓ تم تغيير كلمة المرور بنجاح!</div>
+
+    <div class="reset-section">
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.8rem;">إعادة تعيين العدّادات تحذف جميع بيانات الزيارات المحفوظة.</p>
+      <button class="reset-btn" onclick="resetStats()">🗑️ إعادة تعيين العدّادات</button>
+      <div class="save-msg" id="resetMsg" style="color:#C0392B;">✓ تم إعادة تعيين العدّادات!</div>
     </div>
   </div>
 
   <div class="note">
-    ℹ️ "عدد الزوار" و"عدد مرات الدخول" يُحسبان تلقائيًا وإلكترونيًا من زيارات الموقع الفعلية. هذه اللوحة غير مرتبطة بالموقع الظاهر للزوار ولا يمكن لأي عميل الوصول إليها.
+    ℹ️ <strong>ملاحظة مهمة:</strong> جميع الإحصائيات تُحسب محلياً عبر المتصفح (localStorage). هذا يعني أن العدّادات تعكس زيارات هذا المتصفح فقط. للحصول على إحصائيات شاملة، يُنصح باستخدام Google Analytics.
   </div>
+  <div class="note">
+    🔒 كلمة المرور محفوظة محلياً في المتصفح. الكلمة الافتراضية: <code style="background:rgba(255,255,255,.2);padding:.1rem .4rem;border-radius:4px;">11223344</code>
+  </div>
+
+  <a href="index.html" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    الرجوع إلى الموقع الرئيسي
+  </a>
 </div>
 
 <script>
-  var NAMESPACE = 'marwa-salim-pharmacy-taji';
-  var ADMIN_PASSWORD = '11223344'; // غيّرها متى ما أردت من هنا
+  var STORE_KEY = 'mspharm_stats';
+  var PASS_KEY = 'mspharm_admin_pass';
+  var DEFAULT_PASSWORD = '11223344';
+
+  function getPassword(){
+    try{
+      var p = localStorage.getItem(PASS_KEY);
+      if(p) return p;
+    }catch(e){}
+    return DEFAULT_PASSWORD;
+  }
 
   function tryLogin(){
     var val = document.getElementById('passInput').value;
-    if(val === ADMIN_PASSWORD){
+    if(val === getPassword()){
       try{ sessionStorage.setItem('admin_ok','1'); }catch(e){}
       showDashboard();
     } else {
@@ -166,19 +236,56 @@
     loadStats();
   }
 
-  function loadStats(){
-    fetch('https://api.countapi.xyz/get/' + NAMESPACE + '/visitors')
-      .then(function(r){ return r.json(); })
-      .then(function(d){ document.getElementById('visitorsCount').textContent = (d && d.value) ? d.value : 0; })
-      .catch(function(){ document.getElementById('visitorsCount').textContent = '—'; });
-
-    fetch('https://api.countapi.xyz/get/' + NAMESPACE + '/visits')
-      .then(function(r){ return r.json(); })
-      .then(function(d){ document.getElementById('visitsCount').textContent = (d && d.value) ? d.value : 0; })
-      .catch(function(){ document.getElementById('visitsCount').textContent = '—'; });
+  function getStats(){
+    try{
+      var d = JSON.parse(localStorage.getItem(STORE_KEY));
+      if(d && typeof d.visits !== 'undefined') return d;
+    }catch(e){}
+    return {visits:0, visitors:0};
   }
 
-  // إبقاء الأدمن مسجّل دخول خلال نفس الجلسة (يُطلب كلمة السر من جديد عند فتح المتصفح مجددًا)
+  function loadStats(){
+    var stats = getStats();
+    document.getElementById('visitorsCount').textContent = stats.visitors || 0;
+    document.getElementById('visitsCount').textContent = stats.visits || 0;
+
+    // Check dark mode usage
+    var darkMode = '—';
+    try{ darkMode = localStorage.getItem('dark_mode') === '1' ? 'مفعّل' : 'معطّل'; }catch(e){}
+    document.getElementById('darkModeCount').textContent = darkMode;
+
+    // Check language
+    var lang = '—';
+    try{ lang = localStorage.getItem('site_lang') === 'en' ? 'مفعّل' : 'عربي'; }catch(e){}
+    document.getElementById('langCount').textContent = lang;
+  }
+
+  function changePassword(){
+    var newPass = document.getElementById('newPassInput').value;
+    if(newPass.length < 4){
+      alert('كلمة المرور يجب أن تكون 4 أحرف على الأقل');
+      return;
+    }
+    try{ localStorage.setItem(PASS_KEY, newPass); }catch(e){}
+    document.getElementById('newPassInput').value = '';
+    var msg = document.getElementById('passSaveMsg');
+    msg.style.display = 'block';
+    setTimeout(function(){ msg.style.display = 'none'; }, 3000);
+  }
+
+  function resetStats(){
+    if(!confirm('هل أنت متأكد من إعادة تعيين جميع العدّادات؟')) return;
+    try{
+      localStorage.setItem(STORE_KEY, JSON.stringify({visits:0, visitors:0}));
+      localStorage.removeItem('visited_before');
+    }catch(e){}
+    loadStats();
+    var msg = document.getElementById('resetMsg');
+    msg.style.display = 'block';
+    setTimeout(function(){ msg.style.display = 'none'; }, 3000);
+  }
+
+  // إبقاء الأدمن مسجّل دخول خلال نفس الجلسة
   (function(){
     var ok = false;
     try{ ok = sessionStorage.getItem('admin_ok') === '1'; }catch(e){}
