@@ -234,12 +234,12 @@
   }
 
   function loadStats(){
-    fetch('https://api.counterapi.dev/v1/marwasalim/visitors')
+    fetch('https://api.counterapi.dev/v1/marwasalim/visitors?t=' + Date.now())
       .then(function(res){ return res.json(); })
       .then(function(data){ document.getElementById('visitorsCount').textContent = data.count || 0; })
       .catch(function(){ document.getElementById('visitorsCount').textContent = '—'; });
 
-    fetch('https://api.counterapi.dev/v1/marwasalim/visits')
+    fetch('https://api.counterapi.dev/v1/marwasalim/visits?t=' + Date.now())
       .then(function(res){ return res.json(); })
       .then(function(data){ document.getElementById('visitsCount').textContent = data.count || 0; })
       .catch(function(){ document.getElementById('visitsCount').textContent = '—'; });
