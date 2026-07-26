@@ -1728,10 +1728,7 @@
   /* ===== VISITOR COUNTER ===== */
   (function(){
     try {
-      if(!localStorage.getItem('visited_before')){
-        localStorage.setItem('visited_before', '1');
-        fetch('/api/hit?type=visitors').catch(function(){});
-      }
+      fetch('/api/hit?type=visitors').catch(function(){});
     } catch(e){}
   })();
 </script>
