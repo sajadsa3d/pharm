@@ -1728,7 +1728,6 @@
   /* ===== VISITOR COUNTER ===== */
   (function(){
     try {
-      fetch('/api/hit?type=visits').catch(function(){});
       if(!localStorage.getItem('visited_before')){
         localStorage.setItem('visited_before', '1');
         fetch('/api/hit?type=visitors').catch(function(){});
