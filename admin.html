@@ -151,11 +151,7 @@
       <div class="value" id="visitorsCount">—</div>
       <div class="sub">زوار فريدين من هذا المتصفح</div>
     </div>
-    <div class="stat-card">
-      <div class="label">🔁 عدد مرات الدخول</div>
-      <div class="value" id="visitsCount">—</div>
-      <div class="sub">إجمالي زيارات الصفحة</div>
-    </div>
+
     <div class="stat-card">
       <div class="label">🌙 وضع ليلي</div>
       <div class="value" id="darkModeCount">—</div>
@@ -239,10 +235,7 @@
       .then(function(data){ document.getElementById('visitorsCount').textContent = data.count || 0; })
       .catch(function(){ document.getElementById('visitorsCount').textContent = '—'; });
 
-    fetch('/api/stats?type=visits&t=' + Date.now())
-      .then(function(res){ return res.json(); })
-      .then(function(data){ document.getElementById('visitsCount').textContent = data.count || 0; })
-      .catch(function(){ document.getElementById('visitsCount').textContent = '—'; });
+
 
     // Check dark mode usage
     var darkMode = '—';
