@@ -96,13 +96,12 @@
   html.dark .welcome-popup{background:var(--white);color:var(--ink);}
 
   *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html, body { overflow-x: hidden; }
   body{
     font-family:'IBM Plex Sans Arabic',sans-serif;
     background:var(--bg);
     color:var(--ink);
     line-height:1.75;
-    overflow-x:hidden;
     transition:background .35s ease, color .35s ease;
   }
   h1,h2,h3,.brand,.eyebrow{font-family:'Cairo',sans-serif;}
@@ -278,7 +277,7 @@
 
   .hero-visual{position:relative;display:flex;align-items:center;justify-content:center;}
   .pulse-ring{
-    position:absolute;width:340px;height:340px;border-radius:50%;
+    position:absolute;width:90vw;max-width:340px;height:90vw;max-height:340px;border-radius:50%;
     border:1px dashed rgba(255,255,255,.18);
   }
   .rx-card{
@@ -1725,6 +1724,17 @@
     document.getElementById('welcomePopup').classList.remove('show');
     try{ localStorage.setItem('popup_shown','1'); }catch(e){}
   }
+
+  /* ===== VISITOR COUNTER ===== */
+  (function(){
+    try {
+      fetch('https://api.counterapi.dev/v1/marwasalim/visits/up').catch(function(){});
+      if(!localStorage.getItem('visited_before')){
+        localStorage.setItem('visited_before', '1');
+        fetch('https://api.counterapi.dev/v1/marwasalim/visitors/up').catch(function(){});
+      }
+    } catch(e){}
+  })();
 </script>
 
 </body>
