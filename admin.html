@@ -177,16 +177,13 @@
     </div>
     <div class="save-msg" id="passSaveMsg">✓ تم تغيير كلمة المرور بنجاح!</div>
 
-    <div class="reset-section">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.8rem;">إعادة تعيين العدّادات تحذف جميع بيانات الزيارات المحفوظة.</p>
-      <button class="reset-btn" onclick="resetStats()">🗑️ إعادة تعيين العدّادات</button>
-      <div class="save-msg" id="resetMsg" style="color:#C0392B;">✓ تم إعادة تعيين العدّادات!</div>
-    </div>
   </div>
 
   <div class="note">
-    ℹ️ <strong>ملاحظة مهمة:</strong> جميع الإحصائيات تُحسب محلياً عبر المتصفح (localStorage). هذا يعني أن العدّادات تعكس زيارات هذا المتصفح فقط. للحصول على إحصائيات شاملة، يُنصح باستخدام Google Analytics.
+    ℹ️ <strong>ملاحظة مهمة:</strong> إحصائيات الزوار الآن حقيقية ومباشرة (Online) لجميع المستخدمين. لا يمكن تصفيرها من هنا للحفاظ على دقة الأرقام.
   </div>
+
+
   <div class="note">
     🔒 كلمة المرور محفوظة محلياً في المتصفح. الكلمة الافتراضية: <code style="background:rgba(255,255,255,.2);padding:.1rem .4rem;border-radius:4px;">11223344</code>
   </div>
@@ -236,18 +233,16 @@
     loadStats();
   }
 
-  function getStats(){
-    try{
-      var d = JSON.parse(localStorage.getItem(STORE_KEY));
-      if(d && typeof d.visits !== 'undefined') return d;
-    }catch(e){}
-    return {visits:0, visitors:0};
-  }
-
   function loadStats(){
-    var stats = getStats();
-    document.getElementById('visitorsCount').textContent = stats.visitors || 0;
-    document.getElementById('visitsCount').textContent = stats.visits || 0;
+    fetch('https://api.counterapi.dev/v1/marwasalim/visitors')
+      .then(function(res){ return res.json(); })
+      .then(function(data){ document.getElementById('visitorsCount').textContent = data.count || 0; })
+      .catch(function(){ document.getElementById('visitorsCount').textContent = '—'; });
+
+    fetch('https://api.counterapi.dev/v1/marwasalim/visits')
+      .then(function(res){ return res.json(); })
+      .then(function(data){ document.getElementById('visitsCount').textContent = data.count || 0; })
+      .catch(function(){ document.getElementById('visitsCount').textContent = '—'; });
 
     // Check dark mode usage
     var darkMode = '—';
@@ -271,19 +266,7 @@
     var msg = document.getElementById('passSaveMsg');
     msg.style.display = 'block';
     setTimeout(function(){ msg.style.display = 'none'; }, 3000);
-  }
 
-  function resetStats(){
-    if(!confirm('هل أنت متأكد من إعادة تعيين جميع العدّادات؟')) return;
-    try{
-      localStorage.setItem(STORE_KEY, JSON.stringify({visits:0, visitors:0}));
-      localStorage.removeItem('visited_before');
-    }catch(e){}
-    loadStats();
-    var msg = document.getElementById('resetMsg');
-    msg.style.display = 'block';
-    setTimeout(function(){ msg.style.display = 'none'; }, 3000);
-  }
 
   // إبقاء الأدمن مسجّل دخول خلال نفس الجلسة
   (function(){
